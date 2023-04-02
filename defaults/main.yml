@@ -34,3 +34,15 @@ AWS_REGION_S3_GITLAB: eu-west-1
 gitlab_enable_pre_receive_hooks: false
 hooks_folder: "{{ gitlab_home }}/data/gitaly/custom_hooks/pre-receive.d/"
 hooks_bin_folder: "{{ gitlab_home }}/data/gitaly/hooks-bin/"
+
+s3cmd_host_base: s3.amazonaws.com
+s3cmd_host_bucket: %(bucket)s.s3.amazonaws.com
+
+backup_notifications:
+  enabled: true 
+  apprise_target: ""
+  requirements:
+    - python3
+    - python3-pip
+    - python3-setuptools
+
