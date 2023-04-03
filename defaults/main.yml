@@ -35,8 +35,8 @@ gitlab_enable_pre_receive_hooks: false
 hooks_folder: "{{ gitlab_home }}/data/gitaly/custom_hooks/pre-receive.d/"
 hooks_bin_folder: "{{ gitlab_home }}/data/gitaly/hooks-bin/"
 
-s3cmd_host_base: s3.amazonaws.com
-s3cmd_host_bucket: %(bucket)s.s3.amazonaws.com
+s3cmd_host_base: "s3.amazonaws.com"
+s3cmd_host_bucket: "%(bucket)s.s3.amazonaws.com"
 
 backup_notifications:
   enabled: true 

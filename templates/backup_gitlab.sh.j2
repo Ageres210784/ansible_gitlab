@@ -2,8 +2,11 @@
 FILENAME={{ gitlab_home }}/data/backups/`date +%s_%Y_%m_%d`_gitlab_config.tar.gz
 rm -f {{ gitlab_home }}/data/backups/*_gitlab_config.tar.gz
 tar -cpzf $FILENAME --directory={{ gitlab_home }}/ config
+RESULT=$?
 s3cmd put $FILENAME s3://$GITLAB_S3_PREFIX
+RESULT=$(($RESULT+$?))
 /usr/bin/docker exec -t {{ gitlab_container_name }} gitlab-backup create CRON=1 STRATEGY=copy
-if [[ -z $(ls -la /var/lib/gitlab/gitlab/data/backups | grep _gitlab_backup.tar | awk '{print $7}' | grep $(date +%d)) || -z $(ls -la /var/lib/gitlab/gitlab/data/backups | grep _config.tar.gz | awk '{print $7}' | grep $(date +%d)) ]]; then
+RESULT=$(($RESULT+$?))
+if [[ "$RESULT" -gt 0 || -z $(ls -la {{ gitlab_home }}/data/backups | grep _gitlab_backup.tar | awk '{print $9}' | grep $(date +%d)) || -z $(ls -la {{ gitlab_home }}/data/backups | grep _config.tar.gz | awk '{print $9}'| grep $(date +%d)) || -z $(s3cmd la s3://$GITLAB_S3_PREFIX | grep _gitlab_backup.tar | awk '{print $4}' | grep $(date +%d)) || -z $(s3cmd la s3://$GITLAB_S3_PREFIX | grep _config.tar.gz | awk '{print $4}' | grep $(date +%d)) ]]; then
   apprise -t "Failed to create backup" -b "Failed to create backuptest fot gitlab in $(date)" --config=/etc/backup/apprise_config
 fi
