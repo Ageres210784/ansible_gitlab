@@ -211,7 +211,8 @@ def check_between(ctx: Context, base: str, target: str):
         cmd = ["git", "diff", "--diff-filter=d", "--name-only", f'{commit}^', commit]
         files = subprocess.check_output(cmd)
         for file in files.splitlines():
-            filestr = file.decode()
+            # Replace non printable "ZERO WIDTH SPACE" (\\342\\200\\213) to correct character code.
+            filestr = re.sub(r'\\342\\200\\213','\u200B',file.decode().strip('"'))
             content = subprocess.check_output(["git", "show", f'{commit}:{filestr}'])
             check_file(ctx, content, filestr)
 
