@@ -24,6 +24,7 @@
           hostname: "{{ gitlab_host_name }}"
           environment:
             GITLAB_OMNIBUS_CONFIG: "{{ gitlab_omnibus_config }}"
+          shm_size: 4gb
           restart: always
 
 - name: Import backup.yml
